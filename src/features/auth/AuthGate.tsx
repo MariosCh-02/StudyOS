@@ -11,6 +11,7 @@ import { discardAndSwitchOwner, prepareLocalForUser } from "@/sync/engine";
 import { onRemoteChanges, startSync, stopSync, syncNow } from "@/sync/syncService";
 import { getProfile, updateProfile } from "@/services/settings";
 import { AuthScreen, AuthShell } from "./AuthScreen";
+import { VerifyEmailScreen } from "./VerifyEmailScreen";
 
 interface AuthContextValue {
   user: User;
@@ -75,6 +76,12 @@ export function AuthGate({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null | undefined>(undefined);
   const [local, setLocal] = useState<LocalState>({ kind: "preparing" });
   const [attempt, setAttempt] = useState(0);
+  // The cloud only accepts verified accounts; reloading the user doesn't fire onAuthStateChanged.
+  const [verifiedNow, setVerifiedNow] = useState(false);
+  const verified = !!user && (user.emailVerified || verifiedNow);
+  useEffect(() => {
+    setVerifiedNow(false);
+  }, [user?.uid]);
 
   useEffect(() => {
     if (!isFirebaseConfigured) return;
@@ -95,7 +102,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
   );
 
   useEffect(() => {
-    if (!user) {
+    if (!user || !verified) {
       stopSync();
       return;
     }
@@ -114,7 +121,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
     return () => {
       cancelled = true;
     };
-  }, [user, activate, attempt]);
+  }, [user, verified, activate, attempt]);
 
   // Refresh every screen when the cloud delivers changes from another device.
   useEffect(() => onRemoteChanges(() => void client.invalidateQueries()), [client]);
@@ -131,6 +138,7 @@ export function AuthGate({ children }: { children: ReactNode }) {
   if (!isFirebaseConfigured) return <SetupRequired />;
   if (user === undefined) return <Spinner label="Starting StudyOS…" />;
   if (user === null) return <AuthScreen />;
+  if (!verified) return <VerifyEmailScreen user={user} onVerified={() => setVerifiedNow(true)} onSignOut={() => void firebaseSignOut(getFirebaseAuth())} />;
   if (local.kind === "preparing") return <Spinner label="Loading your data…" />;
   if (local.kind === "error") return <ErrorState error={local.error} onRetry={() => setAttempt((n) => n + 1)} />;
   if (local.kind === "conflict")
