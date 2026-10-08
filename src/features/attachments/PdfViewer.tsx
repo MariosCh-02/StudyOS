@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ExternalLink, Minus, MoveHorizontal, Plus } from "lucide-react";
-import { GlobalWorkerOptions, getDocument, TextLayer, type PDFDocumentLoadingTask, type PDFDocumentProxy, type PDFPageProxy, type RenderTask } from "pdfjs-dist";
-import workerUrl from "pdfjs-dist/build/pdf.worker.min.mjs?url";
+import { GlobalWorkerOptions, getDocument, TextLayer, type PDFDocumentLoadingTask, type PDFDocumentProxy, type PDFPageProxy, type RenderTask } from "pdfjs-dist/legacy/build/pdf.mjs";
+// Legacy build: the modern one needs Safari 18.2+ APIs, too new for the macOS web view on older systems.
+import workerUrl from "pdfjs-dist/legacy/build/pdf.worker.min.mjs?url";
 import { IconButton } from "@/components/ui/Button";
 import { ErrorState, Spinner } from "@/components/ui/Feedback";
 import { openStoredFile, readStoredFile } from "@/lib/native";

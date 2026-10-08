@@ -18,7 +18,7 @@ import { syncNow } from "@/sync/syncService";
 import { Section } from "./Section";
 import { AiSection } from "./AiSection";
 import { BackupSection } from "./BackupSection";
-import { WindowsSection } from "./WindowsSection";
+import { DesktopSection } from "./DesktopSection";
 
 function ProfileSection({ initial }: { initial: string }) {
   const client = useQueryClient();
@@ -170,7 +170,7 @@ function CalendarSection({ settings }: { settings: SettingsMap }) {
     }
   };
   return (
-    <Section title="Calendar & notifications" description="Windows notifications are shown while StudyOS is open (it can be minimised).">
+    <Section title="Calendar & notifications" description="Desktop notifications are shown while StudyOS is open (it can be minimised).">
       <div className="grid max-w-md grid-cols-2 gap-3">
         <SelectField
           label="Week starts on"
@@ -331,7 +331,7 @@ export default function SettingsPage() {
         <TemplatesSection />
         <AiSection settings={settings.data} />
         <AppearanceSection theme={settings.data.theme} />
-        <WindowsSection settings={settings.data} />
+        <DesktopSection settings={settings.data} />
         <BackupSection settings={settings.data} />
         <DataSection />
       </div>

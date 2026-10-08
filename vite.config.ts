@@ -22,7 +22,8 @@ export default defineConfig({
   },
   envPrefix: ["VITE_", "TAURI_ENV_*"],
   build: {
-    target: "chrome105",
+    // WebView2 (Chromium) on Windows, WKWebView (Safari) on macOS.
+    target: process.env.TAURI_ENV_PLATFORM === "darwin" ? "safari16" : "chrome105",
     minify: !process.env.TAURI_ENV_DEBUG,
     sourcemap: !!process.env.TAURI_ENV_DEBUG,
     // Desktop app: chunks load from disk, and the editor/PDF chunks are lazy.

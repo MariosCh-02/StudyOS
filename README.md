@@ -1,6 +1,6 @@
 # StudyOS
 
-**Your Personal Academic Operating System** — an offline-first Windows desktop app for managing an entire academic journey (school → university → Master's → PhD → professional learning), for any field of study.
+**Your Personal Academic Operating System** — an offline-first desktop app for Windows and macOS for managing an entire academic journey (school → university → Master's → PhD → professional learning), for any field of study.
 
 Built with Tauri 2, React, TypeScript, Vite, Tailwind CSS and SQLite.
 
@@ -26,9 +26,11 @@ Built with Tauri 2, React, TypeScript, Vite, Tailwind CSS and SQLite.
 End users only need the installer. To build from source you need:
 
 1. **Node.js 20+** and npm
-2. **Rust** (stable, MSVC toolchain) — install from <https://rustup.rs>
-3. **Microsoft C++ Build Tools** — <https://aka.ms/vs/17/release/vs_BuildTools.exe>, with the *Desktop development with C++* workload (MSVC + Windows SDK)
-4. **WebView2** — preinstalled on Windows 10/11
+2. **Rust** (stable) — install from <https://rustup.rs> (MSVC toolchain on Windows)
+3. **Windows:** **Microsoft C++ Build Tools** — <https://aka.ms/vs/17/release/vs_BuildTools.exe>, with the *Desktop development with C++* workload (MSVC + Windows SDK). **WebView2** is preinstalled on Windows 10/11.
+4. **macOS:** Xcode Command Line Tools (`xcode-select --install`). The app needs macOS 13 or later.
+
+Each platform's app must be built on that platform. Without a Mac, use the **Build macOS** GitHub Actions workflow (`.github/workflows/build-macos.yml`), which produces a `.dmg` for Apple Silicon and Intel Macs.
 
 Check with `npx tauri info`.
 
@@ -51,7 +53,7 @@ StudyOS uses Firebase for accounts and to keep each user's data in their own pri
 - Sync runs at sign-in, a few seconds after each edit, when the window regains focus or the network returns, and every 3 minutes. If the same record was edited on two devices, the most recent edit wins.
 - Signing in with a *different* account on the same PC clears the local copy first. If the previous account still has unsynced changes, StudyOS asks before discarding them.
 - You must be online to sign in for the first time; after that the app opens offline.
-- **Attachments are local-only.** File details (name, size, which lecture they belong to) sync; the files themselves stay in `%LOCALAPPDATA%com.studyos.appattachments` on the computer that added them. Other computers show them as "On another computer".
+- **Attachments are local-only.** File details (name, size, which lecture they belong to) sync; the files themselves stay in the app data folder (see *Data* under Architecture) on the computer that added them. Other computers show them as "On another computer".
 - If the same note is edited on two computers before they sync, the most recent save wins.
 
 ## Notes, lectures and files
@@ -117,7 +119,7 @@ Practice → Learning tracks → **Install** adds the bundled curriculum (`src/c
 StudyOS works fully without AI; every AI control is hidden until you turn it on in **Settings → AI**.
 
 - **Providers**: OpenAI and Anthropic (your own API key), or Ollama for models running on your own computer. *List models* shows what your key or Ollama install offers; *Test* checks the setup.
-- **Keys** are stored in Windows Credential Manager, never in the database, settings or cloud sync. Requests are made by the Rust backend, so the key never returns to the app's web view.
+- **Keys** are stored in Windows Credential Manager or the macOS Keychain, never in the database, settings or cloud sync. Requests are made by the Rust backend, so the key never returns to the app's web view.
 - **Nothing is sent automatically.** Each AI action sends only the text it needs: the selection (or the note) for note actions, the abstract and reading notes for a paper summary, and the topic list, mastery and deadlines (no notes) for a revision plan.
 - **Notes**: the *AI* button in the note header can summarise, explain a selection, improve messy notes, or create flashcards and quiz questions. You review cards and questions before they are saved, tagged `#ai-generated`.
 - **Exams**: *AI plan* creates a revision plan you can save as a note. *Plan revision* still works without AI.
@@ -131,20 +133,22 @@ StudyOS works fully without AI; every AI control is hidden until you turn it on 
 
 ## Backups and export
 
-- **Automatic backups**: once a day while StudyOS is running, a snapshot of all your data is saved in `%LOCALAPPDATA%\com.studyos.app\backups`. The newest 14 are kept. **Settings → Backups & export** also has *Backup now*, *Open folder* and the list of backups.
+- **Automatic backups**: once a day while StudyOS is running, a snapshot of all your data is saved in the `backups` folder of the app data folder (see *Data* under Architecture). The newest 14 are kept. **Settings → Backups & export** also has *Backup now*, *Open folder* and the list of backups.
 - **Restore** puts StudyOS back to a backup's state on all your devices: restored items are re-stamped so cloud sync spreads them, and items created after the backup are removed. A *Before restore* backup is saved first, so a restore can be undone.
 - **Export everything (.zip)** writes all data plus every attached file, for moving to a new computer or keeping a copy elsewhere. **Import backup** accepts that ZIP or a `.json` backup. Files in a ZIP go through the same checks as any imported file, and never overwrite existing ones.
 - **Exports** (the *Export* button on each page):
-  - a note, all of a course's notes, or a project as **Markdown** or **PDF** (print to "Microsoft Print to PDF");
+  - a note, all of a course's notes, or a project as **Markdown** or **PDF** (print to "Microsoft Print to PDF" on Windows, or *Save as PDF* in the macOS print dialog);
   - grades, tasks and flashcards as **CSV** (flashcards import into Anki);
   - a programme as **JSON**, which can be imported again (merged into existing data);
   - the calendar as **ICS** (Calendar page) and papers as **BibTeX** (Papers page).
 
-## Windows
+## Desktop integration
 
-- **System tray**: StudyOS has a tray icon. Left-click opens it. The menu has *Open StudyOS*, *Quick Lecture Mode* (the class on now, or the next or last one today), *Start study timer* and *Quit StudyOS*.
-- **Closing the window** keeps StudyOS running in the tray by default, so reminders and the study timer keep working. Open notes are saved first. Change this in **Settings → Windows**.
-- **Ctrl+Shift+S** can bring StudyOS to the front from any program. It is **off by default** because, while on, other programs can't use that shortcut (it is often *Save As*). Turn it on in Settings → Windows.
+Keyboard shortcuts in this README are written for Windows; on macOS use Cmd for Ctrl and Option for Alt.
+
+- **System tray** (menu bar on macOS): StudyOS has a tray icon. Left-click opens it. The menu has *Open StudyOS*, *Quick Lecture Mode* (the class on now, or the next or last one today), *Start study timer* and *Quit StudyOS*.
+- **Closing the window** keeps StudyOS running in the tray by default, so reminders and the study timer keep working. Open notes are saved first. Change this in **Settings → Windows** (**Settings → macOS** on a Mac). On macOS, clicking the Dock icon brings the window back, and Cmd+Q also saves open notes before quitting.
+- **Ctrl+Shift+S** (Cmd+Shift+S on macOS) can bring StudyOS to the front from any program. It is **off by default** because, while on, other programs can't use that shortcut (it is often *Save As*). Turn it on in Settings → Windows (Settings → macOS).
 - **Performance**: `tests/performance.test.ts` seeds 40 courses, 4,000 notes, 4,000 flashcards, 3,000 questions, 14,000 practice records, 1,500 tasks, 1,500 events and 400 files. The main screens must each load within 1.5 s on the test's in-memory SQLite (they currently take 0–110 ms). Long lists show 300 items at a time with *Show more*.
 
 ## Security model
@@ -163,10 +167,10 @@ npm install          # install JS dependencies
 npm test             # run unit + database tests (no Rust needed)
 npm run build        # type-check and build the frontend
 npm run tauri dev    # run the desktop app with hot reload
-npm run release      # build the installer → release/StudyOS-Setup.exe
+npm run release      # build the installer → release/StudyOS-Setup.exe (Windows) or release/StudyOS.dmg (macOS)
 ```
 
-The installer is per-user (no admin rights). It adds Start Menu and desktop shortcuts and installs WebView2 if it is missing.
+The Windows installer is per-user (no admin rights). It adds Start Menu and desktop shortcuts and installs WebView2 if it is missing. On macOS, drag StudyOS from the `.dmg` to Applications. Unless the app is signed and notarized with an Apple Developer account, macOS blocks the first launch; allow it in **System Settings → Privacy & Security → Open Anyway**.
 
 ## Architecture
 
@@ -188,7 +192,7 @@ src-tauri/
 tests/         Vitest suites; database tests run the real migrations against in-memory SQLite (sql.js)
 ```
 
-**Data.** SQLite is the working copy (synced per user to Firestore, see above), stored at `%APPDATA%\com.studyos.app\studyos.db`. IDs are UUIDs and timestamps are ISO-8601. User-owned rows are soft-deleted (`deleted_at`). Foreign keys and indexes are enforced.
+**Data.** SQLite is the working copy (synced per user to Firestore, see above), stored at `%APPDATA%\com.studyos.app\studyos.db` on Windows (attachments and backups are under `%LOCALAPPDATA%\com.studyos.app`) and in `~/Library/Application Support/com.studyos.app/` on macOS. IDs are UUIDs and timestamps are ISO-8601. User-owned rows are soft-deleted (`deleted_at`). Foreign keys and indexes are enforced.
 
 **Migrations.** To change the schema, add `src-tauri/migrations/000N_name.sql` and register it in `src-tauri/src/lib.rs`. Never edit a migration that has already shipped. The test-suite applies every `.sql` file in order, so tests always run against the production schema.
 

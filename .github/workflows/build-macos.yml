@@ -1,0 +1,53 @@
+# Builds the macOS app (.dmg, Apple Silicon + Intel) on a GitHub macOS runner,
+# since a Mac build can't be made on Windows. Run it from the Actions tab.
+#
+# Repository secrets used:
+#   VITE_FIREBASE_*   Firebase web config (same values as .env.local); without
+#                     them the app builds but sync is unavailable.
+#
+# The .dmg is unsigned: on first launch macOS asks users to allow it in
+# System Settings → Privacy & Security. To sign and notarize (Apple Developer
+# account needed), add APPLE_CERTIFICATE, APPLE_CERTIFICATE_PASSWORD,
+# APPLE_SIGNING_IDENTITY, APPLE_ID, APPLE_PASSWORD and APPLE_TEAM_ID secrets
+# and pass them to the Build step's env (set them only when they exist: Tauri
+# treats an empty value as "sign with this").
+name: Build macOS
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-darwin,x86_64-apple-darwin
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - run: npm ci
+
+      - run: npm test
+
+      - name: Build
+        run: npx tauri build --target universal-apple-darwin
+        env:
+          VITE_FIREBASE_API_KEY: ${{ secrets.VITE_FIREBASE_API_KEY }}
+          VITE_FIREBASE_AUTH_DOMAIN: ${{ secrets.VITE_FIREBASE_AUTH_DOMAIN }}
+          VITE_FIREBASE_PROJECT_ID: ${{ secrets.VITE_FIREBASE_PROJECT_ID }}
+          VITE_FIREBASE_APP_ID: ${{ secrets.VITE_FIREBASE_APP_ID }}
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: StudyOS-macOS
+          path: src-tauri/target/universal-apple-darwin/release/bundle/dmg/*.dmg

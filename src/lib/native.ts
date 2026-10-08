@@ -77,7 +77,7 @@ export interface AiReply {
   truncated: boolean;
 }
 
-/** Sends one request to the configured provider. The API key is read from Windows Credential Manager in Rust. */
+/** Sends one request to the configured provider. The API key is read from the OS credential store in Rust. */
 export const aiComplete = (request: AiCompletionRequest) => call<AiReply>("ai_complete", { request });
 export const aiListModels = (provider: string, baseUrl?: string | null) => call<string[]>("ai_list_models", { provider, baseUrl: baseUrl ?? null });
 export const aiSetKey = (provider: string, key: string) => call<void>("ai_set_key", { provider, key });

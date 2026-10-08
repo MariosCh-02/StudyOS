@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { useEditorState, type Editor } from "@tiptap/react";
 import clsx from "clsx";
+import { isMac, keys } from "@/lib/platform";
 import {
   Bold,
   Code,
@@ -93,10 +94,10 @@ export function Toolbar({ editor, onLink, onImage, onMath, onFlashcard, onConcep
 
   return (
     <div role="toolbar" aria-label="Formatting" className="flex flex-wrap items-center gap-0.5 border-b border-border bg-surface px-2 py-1.5">
-      <Btn label="Undo (Ctrl+Z)" disabled={!s.canUndo} onClick={() => c().undo().run()}>
+      <Btn label={keys("Undo (Ctrl+Z)")} disabled={!s.canUndo} onClick={() => c().undo().run()}>
         <Undo2 className="size-4" />
       </Btn>
-      <Btn label="Redo (Ctrl+Y)" disabled={!s.canRedo} onClick={() => c().redo().run()}>
+      <Btn label={isMac ? "Redo (Cmd+Shift+Z)" : "Redo (Ctrl+Y)"} disabled={!s.canRedo} onClick={() => c().redo().run()}>
         <Redo2 className="size-4" />
       </Btn>
       <Sep />
@@ -112,46 +113,46 @@ export function Toolbar({ editor, onLink, onImage, onMath, onFlashcard, onConcep
         <option value="h3">Heading 3</option>
       </select>
       <Sep />
-      <Btn label="Bold (Ctrl+B)" active={s.bold} onClick={() => c().toggleBold().run()}>
+      <Btn label={keys("Bold (Ctrl+B)")} active={s.bold} onClick={() => c().toggleBold().run()}>
         <Bold className="size-4" />
       </Btn>
-      <Btn label="Italic (Ctrl+I)" active={s.italic} onClick={() => c().toggleItalic().run()}>
+      <Btn label={keys("Italic (Ctrl+I)")} active={s.italic} onClick={() => c().toggleItalic().run()}>
         <Italic className="size-4" />
       </Btn>
-      <Btn label="Underline (Ctrl+U)" active={s.underline} onClick={() => c().toggleUnderline().run()}>
+      <Btn label={keys("Underline (Ctrl+U)")} active={s.underline} onClick={() => c().toggleUnderline().run()}>
         <Underline className="size-4" />
       </Btn>
-      <Btn label="Strikethrough (Ctrl+Shift+S)" active={s.strike} onClick={() => c().toggleStrike().run()}>
+      <Btn label={keys("Strikethrough (Ctrl+Shift+S)")} active={s.strike} onClick={() => c().toggleStrike().run()}>
         <Strikethrough className="size-4" />
       </Btn>
-      <Btn label="Highlight (Ctrl+Shift+H)" active={s.highlight} onClick={() => c().toggleHighlight().run()}>
+      <Btn label={keys("Highlight (Ctrl+Shift+H)")} active={s.highlight} onClick={() => c().toggleHighlight().run()}>
         <Highlighter className="size-4" />
       </Btn>
-      <Btn label="Inline code (Ctrl+E)" active={s.code} onClick={() => c().toggleCode().run()}>
+      <Btn label={keys("Inline code (Ctrl+E)")} active={s.code} onClick={() => c().toggleCode().run()}>
         <Code className="size-4" />
       </Btn>
       <Sep />
-      <Btn label="Bullet list (Ctrl+Shift+8)" active={s.bullet} onClick={() => c().toggleBulletList().run()}>
+      <Btn label={keys("Bullet list (Ctrl+Shift+8)")} active={s.bullet} onClick={() => c().toggleBulletList().run()}>
         <List className="size-4" />
       </Btn>
-      <Btn label="Numbered list (Ctrl+Shift+7)" active={s.ordered} onClick={() => c().toggleOrderedList().run()}>
+      <Btn label={keys("Numbered list (Ctrl+Shift+7)")} active={s.ordered} onClick={() => c().toggleOrderedList().run()}>
         <ListOrdered className="size-4" />
       </Btn>
-      <Btn label="Checklist (Ctrl+Shift+9)" active={s.task} onClick={() => c().toggleTaskList().run()}>
+      <Btn label={keys("Checklist (Ctrl+Shift+9)")} active={s.task} onClick={() => c().toggleTaskList().run()}>
         <ListChecks className="size-4" />
       </Btn>
       <Sep />
-      <Btn label="Quote (Ctrl+Shift+B)" active={s.quote} onClick={() => c().toggleBlockquote().run()}>
+      <Btn label={keys("Quote (Ctrl+Shift+B)")} active={s.quote} onClick={() => c().toggleBlockquote().run()}>
         <Quote className="size-4" />
       </Btn>
-      <Btn label="Code block (Ctrl+Alt+C)" active={s.codeBlock} onClick={() => c().toggleCodeBlock().run()}>
+      <Btn label={keys("Code block (Ctrl+Alt+C)")} active={s.codeBlock} onClick={() => c().toggleCodeBlock().run()}>
         <SquareCode className="size-4" />
       </Btn>
       <Btn label="Divider" onClick={() => c().setHorizontalRule().run()}>
         <Minus className="size-4" />
       </Btn>
       <Sep />
-      <Btn label="Link (Ctrl+K)" active={s.link} onClick={onLink}>
+      <Btn label={keys("Link (Ctrl+K)")} active={s.link} onClick={onLink}>
         <Link2 className="size-4" />
       </Btn>
       <Btn label="Image" onClick={onImage}>
@@ -161,10 +162,10 @@ export function Toolbar({ editor, onLink, onImage, onMath, onFlashcard, onConcep
         <Table className="size-4" />
       </Btn>
       <Sep />
-      <Btn label="Inline maths (Ctrl+M)" onClick={() => onMath(false)}>
+      <Btn label={keys("Inline maths (Ctrl+M)")} onClick={() => onMath(false)}>
         <Radical className="size-4" />
       </Btn>
-      <Btn label="Equation (Ctrl+Shift+M)" onClick={() => onMath(true)}>
+      <Btn label={keys("Equation (Ctrl+Shift+M)")} onClick={() => onMath(true)}>
         <Sigma className="size-4" />
       </Btn>
       {onFlashcard && (

@@ -1,6 +1,7 @@
 //! Optional AI providers (OpenAI, Anthropic, Ollama).
 //!
-//! API keys live in the Windows Credential Manager (via `keyring`), never in
+//! API keys live in the OS credential store (Windows Credential Manager or the
+//! macOS Keychain, via `keyring`), never in
 //! the database, settings or sync. Requests are made here rather than from
 //! the web view so the key never has to leave Rust after it is saved, and
 //! nothing is sent unless the user starts an AI action.
@@ -10,6 +11,10 @@ use serde_json::{json, Value};
 use std::time::Duration;
 
 const KEYRING_SERVICE: &str = "StudyOS";
+#[cfg(target_os = "macos")]
+const KEY_STORE: &str = "the macOS Keychain";
+#[cfg(not(target_os = "macos"))]
+const KEY_STORE: &str = "Windows Credential Manager";
 const DEFAULT_OLLAMA_URL: &str = "http://localhost:11434";
 const ANTHROPIC_VERSION: &str = "2023-06-01";
 const MAX_PROMPT_CHARS: usize = 400_000;
@@ -67,7 +72,7 @@ pub struct AiReply {
 // ------------------------------------------------------------------ keys
 
 fn entry(provider: Provider) -> Result<keyring::Entry, String> {
-    keyring::Entry::new(KEYRING_SERVICE, &format!("ai-{}", provider.id())).map_err(|e| format!("Windows Credential Manager is unavailable: {e}"))
+    keyring::Entry::new(KEYRING_SERVICE, &format!("ai-{}", provider.id())).map_err(|e| format!("{KEY_STORE} is unavailable: {e}"))
 }
 
 fn validate_key(key: &str) -> Result<(), String> {
@@ -84,7 +89,7 @@ fn read_key(provider: Provider) -> Result<Option<String>, String> {
     match entry(provider)?.get_password() {
         Ok(k) => Ok(Some(k)),
         Err(keyring::Error::NoEntry) => Ok(None),
-        Err(e) => Err(format!("Couldn't read the API key from Windows Credential Manager: {e}")),
+        Err(e) => Err(format!("Couldn't read the API key from {KEY_STORE}: {e}")),
     }
 }
 
@@ -93,7 +98,7 @@ pub fn ai_set_key(provider: String, key: String) -> Result<(), String> {
     let p = Provider::parse(&provider)?;
     let key = key.trim();
     validate_key(key)?;
-    entry(p)?.set_password(key).map_err(|e| format!("Couldn't save the key in Windows Credential Manager: {e}"))
+    entry(p)?.set_password(key).map_err(|e| format!("Couldn't save the key in {KEY_STORE}: {e}"))
 }
 
 #[tauri::command]

@@ -10,7 +10,8 @@ use tauri_plugin_sql::{Migration, MigrationKind};
 
 /// Connection string used by both the Rust side (migrations) and the
 /// frontend (`Database.load`). Relative sqlite paths resolve to the
-/// per-user app config directory (%APPDATA%\com.studyos.app).
+/// per-user app config directory (%APPDATA%\com.studyos.app on Windows,
+/// ~/Library/Application Support/com.studyos.app on macOS).
 pub const DB_URL: &str = "sqlite:studyos.db";
 
 /// Schema migrations. Each file is applied exactly once, in order, inside a
@@ -97,7 +98,10 @@ pub fn run() {
                 window.state::<paths::UserPaths>().allow(paths.iter().cloned());
             }
         })
+        .on_menu_event(|app, event| desktop::on_app_menu(app, event.id.as_ref()))
         .setup(|app| {
+            #[cfg(target_os = "macos")]
+            app.set_menu(desktop::app_menu(app.handle())?)?;
             // A missing tray is not fatal: StudyOS then simply quits when closed.
             if let Err(e) = desktop::build_tray(app.handle()) {
                 eprintln!("StudyOS: couldn't create the tray icon: {e}");
@@ -133,6 +137,13 @@ pub fn run() {
             paths::pick_save_file,
             desktop::quit_app,
         ])
-        .run(tauri::generate_context!())
-        .expect("error while running StudyOS");
+        .build(tauri::generate_context!())
+        .expect("error while running StudyOS")
+        .run(|_app, _event| {
+            // Clicking the Dock icon brings back a window hidden to the menu bar.
+            #[cfg(target_os = "macos")]
+            if let tauri::RunEvent::Reopen { .. } = _event {
+                desktop::show_main(_app);
+            }
+        });
 }

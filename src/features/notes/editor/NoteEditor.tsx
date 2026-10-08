@@ -6,6 +6,7 @@ import { TextField } from "@/components/ui/Field";
 import { useFileDrop } from "@/hooks/useFileDrop";
 import { IMAGE_EXTENSIONS, importFileFromBytes, importFileFromPath, pickFiles } from "@/lib/native";
 import { openExternal } from "@/lib/links";
+import { keys } from "@/lib/platform";
 import { addAttachment } from "@/services/attachments";
 import { parseDoc } from "@/domain/noteContent";
 import { buildExtensions, type MathRequest } from "./extensions";
@@ -53,7 +54,7 @@ function LinkDialog({ open, initial, onClose, onSubmit }: { open: boolean; initi
   };
   return (
     <FormModal open={open} onClose={onClose} title="Link" submitLabel={initial ? "Update" : "Add link"} onSubmit={submit}>
-      <TextField label="Address" autoFocus placeholder="https://" value={url} onChange={(e) => setUrl(e.target.value)} error={error} hint="Leave empty to remove the link. Ctrl+click a link to open it." />
+      <TextField label="Address" autoFocus placeholder="https://" value={url} onChange={(e) => setUrl(e.target.value)} error={error} hint={keys("Leave empty to remove the link. Ctrl+click a link to open it.")} />
     </FormModal>
   );
 }

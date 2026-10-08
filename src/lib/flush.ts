@@ -3,6 +3,8 @@
  * registers a flush function, and the app flushes all of them before the
  * window closes or is hidden.
  */
+import { isMac } from "@/lib/platform";
+
 const flushers = new Set<() => Promise<void>>();
 
 export function registerFlush(fn: () => Promise<void>): () => void {
@@ -23,7 +25,12 @@ async function tellOnceAboutTray() {
     localStorage.setItem(TRAY_HINT_KEY, "1");
     const { isPermissionGranted, sendNotification } = await import("@tauri-apps/plugin-notification");
     if (await isPermissionGranted()) {
-      sendNotification({ title: "StudyOS is still running", body: "Reminders keep working. Open it from the tray icon, or quit from the tray menu. You can change this in Settings." });
+      sendNotification({
+        title: "StudyOS is still running",
+        body: isMac
+          ? "Reminders keep working. Open it from the Dock or the menu bar icon, or quit with Cmd+Q. You can change this in Settings."
+          : "Reminders keep working. Open it from the tray icon, or quit from the tray menu. You can change this in Settings.",
+      });
     }
   } catch {
     // Only a hint.

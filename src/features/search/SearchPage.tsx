@@ -5,6 +5,7 @@ import { Hash, Search as SearchIcon } from "lucide-react";
 import { PageHeader } from "@/components/layout/AppShell";
 import { Card, EmptyState, Spinner } from "@/components/ui/Feedback";
 import { useSearch, useTaggedItems, useTags } from "@/hooks/queries";
+import { keys } from "@/lib/platform";
 import { resultHref, SEARCH_TYPE_LABELS, type SearchResult, type SearchType } from "@/services/search";
 
 /** Renders a snippet whose matches are wrapped in [[ ]] as <mark>. */
@@ -83,7 +84,7 @@ export default function SearchPage() {
         <div>
           {!deferred.trim() && !tag ? (
             <Card>
-              <EmptyState icon={<SearchIcon className="size-5" />} title="Type to search" description="Every word must match. Results are ranked with title matches first. Press Ctrl+K anywhere for quick search." />
+              <EmptyState icon={<SearchIcon className="size-5" />} title="Type to search" description={keys("Every word must match. Results are ranked with title matches first. Press Ctrl+K anywhere for quick search.")} />
             </Card>
           ) : !deferred.trim() && tag ? (
             <Card>

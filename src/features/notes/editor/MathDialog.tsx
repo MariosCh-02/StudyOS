@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import katex from "katex";
 import { FormModal } from "@/components/ui/Modal";
 import { TextAreaField } from "@/components/ui/Field";
+import { keys } from "@/lib/platform";
 
 interface Props {
   open: boolean;
@@ -49,7 +50,7 @@ export function MathDialog({ open, display, initial, onClose, onSubmit, onDelete
             if (latex.trim()) onSubmit(latex.trim());
           }
         }}
-        hint="Ctrl+Enter to insert"
+        hint={keys("Ctrl+Enter to insert")}
       />
       <div className="min-h-16 overflow-x-auto rounded-md border border-border bg-surface-2 px-4 py-3">
         {preview.error ? (

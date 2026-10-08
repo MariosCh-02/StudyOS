@@ -2,7 +2,9 @@
 //!
 //! Imported files are validated (extension allow-list, size limit, and a
 //! content signature check so a renamed executable cannot slip through) and
-//! copied into `%LOCALAPPDATA%\com.studyos.app\attachments` under a random
+//! copied into `attachments` in the app's local data folder
+//! (`%LOCALAPPDATA%\com.studyos.app` on Windows,
+//! `~/Library/Application Support/com.studyos.app` on macOS) under a random
 //! name. The frontend only ever refers to files by that stored name, which is
 //! validated on every call to prevent path traversal. Files are never executed:
 //! "open" hands them to the user's default viewer for that document type.

@@ -3,11 +3,12 @@ import { useQueryClient } from "@tanstack/react-query";
 import { SelectField } from "@/components/ui/Field";
 import { qk } from "@/hooks/queries";
 import { isTauri } from "@/lib/native";
+import { isMac, keys } from "@/lib/platform";
 import { setSetting, type SettingsMap } from "@/services/settings";
 import { setFocusShortcut } from "./DesktopIntegration";
 import { Section } from "./Section";
 
-export function WindowsSection({ settings }: { settings: SettingsMap }) {
+export function DesktopSection({ settings }: { settings: SettingsMap }) {
   const client = useQueryClient();
   const [error, setError] = useState<string | null>(null);
   if (!isTauri()) return null;
@@ -25,27 +26,27 @@ export function WindowsSection({ settings }: { settings: SettingsMap }) {
   };
 
   return (
-    <Section title="Windows" description="How StudyOS behaves on your desktop.">
+    <Section title={isMac ? "macOS" : "Windows"} description="How StudyOS behaves on your desktop.">
       <div className="grid max-w-xl grid-cols-2 gap-3">
         <SelectField
           label="When I close the window"
           value={settings.closeToTray}
           onChange={(e) => void change("closeToTray", e.target.value as "on" | "off")}
           options={[
-            { value: "on", label: "Keep running in the tray" },
+            { value: "on", label: isMac ? "Keep running in the menu bar" : "Keep running in the tray" },
             { value: "off", label: "Quit StudyOS" },
           ]}
-          hint="In the tray, reminders and the study timer keep working. Quit from the tray icon's menu."
+          hint={isMac ? "Reminders and the study timer keep working. Quit with Cmd+Q or from the menu bar icon." : "In the tray, reminders and the study timer keep working. Quit from the tray icon's menu."}
         />
         <SelectField
-          label="Ctrl+Shift+S opens StudyOS"
+          label={`${keys("Ctrl+Shift+S")} opens StudyOS`}
           value={settings.focusShortcut}
           onChange={(e) => void change("focusShortcut", e.target.value as "on" | "off")}
           options={[
             { value: "off", label: "Off" },
             { value: "on", label: "On, from any program" },
           ]}
-          hint="While on, other programs can't use Ctrl+Shift+S (often “Save As”)."
+          hint={`While on, other programs can't use ${keys("Ctrl+Shift+S")} (often “Save As”).`}
         />
       </div>
       {error && <p className="mt-2 text-sm text-danger">{error}</p>}

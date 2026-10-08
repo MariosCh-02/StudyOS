@@ -35,7 +35,7 @@ async function notify(title: string, body: string) {
 }
 
 /**
- * Sends Windows notifications for upcoming classes, study sessions and exams
+ * Sends desktop notifications for upcoming classes, study sessions and exams
  * while StudyOS is running. Renders nothing.
  */
 export function ReminderService() {

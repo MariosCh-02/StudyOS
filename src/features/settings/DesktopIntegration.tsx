@@ -65,7 +65,7 @@ export function DesktopIntegration() {
     };
   }, []);
 
-  // Optional system-wide Ctrl+Shift+S.
+  // Optional system-wide Ctrl+Shift+S (Cmd+Shift+S on macOS).
   const shortcut = settings.data?.focusShortcut;
   useEffect(() => {
     if (!isTauri() || !shortcut) return;

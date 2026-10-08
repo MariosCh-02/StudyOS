@@ -18,6 +18,7 @@ import {
   type AiProvider,
   type RemoteProvider,
 } from "@/domain/aiPrompts";
+import { KEY_STORE } from "@/lib/platform";
 import { setSetting, type SettingsMap } from "@/services/settings";
 import { aiTestConnection } from "@/services/ai";
 import { Section } from "./Section";
@@ -63,8 +64,7 @@ function KeyField({ provider }: { provider: RemoteProvider }) {
     return (
       <div className="flex items-center gap-3 text-sm">
         <span className="flex items-center gap-1.5 text-success">
-          <CheckCircle2 className="size-4" aria-hidden /> API key saved in
-          Windows Credential Manager
+          <CheckCircle2 className="size-4" aria-hidden /> API key saved in {KEY_STORE}
         </span>
         <Button
           size="sm"
@@ -108,8 +108,7 @@ function KeyField({ provider }: { provider: RemoteProvider }) {
         </Button>
       </form>
       <p className="mt-1 text-xs text-subtle">
-        Stored in Windows Credential Manager, never in StudyOS data or the cloud
-        sync.
+        Stored in {KEY_STORE}, never in StudyOS data or the cloud sync.
       </p>
     </div>
   );

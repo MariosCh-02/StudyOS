@@ -1,7 +1,9 @@
 //! Local backups and the full "Export entire StudyOS" archive.
 //!
 //! Backups are JSON snapshots of the database written by the frontend into
-//! `%LOCALAPPDATA%\com.studyos.app\backups`; the newest 14 are kept. The full
+//! `backups` in the app's local data folder (`%LOCALAPPDATA%\com.studyos.app`
+//! on Windows, `~/Library/Application Support/com.studyos.app` on macOS); the
+//! newest 14 are kept. The full
 //! export is a ZIP with the same snapshot plus every attachment file. On
 //! import, archive entries are validated like any other imported file (name,
 //! extension allow-list, size and content signature) and never executed.

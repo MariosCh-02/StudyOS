@@ -2,8 +2,10 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* Semantic colour tokens; switched by the `dark` class on <html>. */
-:root {
+/* Semantic colour tokens; switched by the `dark` class on <html>.
+   `.print-light` keeps printed documents light in dark mode (see lib/print.ts). */
+:root,
+.print-light {
   --bg: #f6f7f9;
   --surface: #ffffff;
   --surface-2: #f0f2f5;
