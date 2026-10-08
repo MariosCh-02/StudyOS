@@ -1,0 +1,113 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Semantic colour tokens; switched by the `dark` class on <html>. */
+:root {
+  --bg: #f6f7f9;
+  --surface: #ffffff;
+  --surface-2: #f0f2f5;
+  --border: #e2e5ea;
+  --fg: #171a21;
+  --muted: #5f6672;
+  --subtle: #8a909b;
+  --accent: #4f6bed;
+  --accent-fg: #ffffff;
+  --accent-soft: #e8ecfd;
+  --danger: #d33f49;
+  --danger-soft: #fdecee;
+  --success: #1f9d61;
+  --success-soft: #e5f6ee;
+  --warning: #b7791f;
+  --warning-soft: #fdf4e3;
+  /* Single-series chart mark; validated (lightness band, contrast) against the surface. */
+  --chart-1: #4f6bed;
+  /* Second categorical series; pair validated for CVD separation and contrast. */
+  --chart-2: #d9622b;
+  color-scheme: light;
+}
+
+.dark {
+  --bg: #0f1115;
+  --surface: #161920;
+  --surface-2: #1d212a;
+  --border: #2a2f3a;
+  --fg: #e6e8ec;
+  --muted: #a0a6b1;
+  --subtle: #6f7682;
+  --accent: #7b8ff7;
+  --accent-fg: #0f1115;
+  --accent-soft: #232a4a;
+  --danger: #f0717a;
+  --danger-soft: #3a1d22;
+  --success: #4cc790;
+  --success-soft: #16302a;
+  --warning: #e0b05c;
+  --warning-soft: #352a17;
+  --chart-1: #7086f2;
+  --chart-2: #dd7340;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-subtle: var(--subtle);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-soft: var(--accent-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --font-sans: "Segoe UI Variable Text", "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-sans);
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+input,
+textarea,
+[contenteditable] {
+  user-select: text;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+/* Slim scrollbars for long study sessions. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+dialog::backdrop {
+  background: rgb(0 0 0 / 0.55);
+}

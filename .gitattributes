@@ -1,0 +1,7 @@
+# Keep identical line endings on every machine (migration SQL is fingerprinted at build time).
+* text=auto eol=lf
+*.png binary
+*.ico binary
+*.icns binary
+*.jpg binary
+*.pdf binary

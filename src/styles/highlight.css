@@ -1,0 +1,74 @@
+/* Syntax colours (highlight.js token classes) */
+.hljs-comment,
+.hljs-quote {
+  color: var(--subtle);
+  font-style: italic;
+}
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal,
+.hljs-type {
+  color: #8b5cf6;
+}
+.hljs-string,
+.hljs-regexp,
+.hljs-addition {
+  color: #16a34a;
+}
+.hljs-number,
+.hljs-symbol,
+.hljs-bullet {
+  color: #c2410c;
+}
+.hljs-title,
+.hljs-title.function_,
+.hljs-section {
+  color: #2563eb;
+}
+.hljs-attr,
+.hljs-attribute,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-property {
+  color: #0e7490;
+}
+.hljs-built_in,
+.hljs-meta {
+  color: #b45309;
+}
+.hljs-deletion {
+  color: var(--danger);
+}
+
+.dark .hljs-keyword,
+.dark .hljs-selector-tag,
+.dark .hljs-literal,
+.dark .hljs-type {
+  color: #c4a7ff;
+}
+.dark .hljs-string,
+.dark .hljs-regexp,
+.dark .hljs-addition {
+  color: #86d9a3;
+}
+.dark .hljs-number,
+.dark .hljs-symbol,
+.dark .hljs-bullet {
+  color: #f5a97f;
+}
+.dark .hljs-title,
+.dark .hljs-title.function_,
+.dark .hljs-section {
+  color: #8fb6ff;
+}
+.dark .hljs-attr,
+.dark .hljs-attribute,
+.dark .hljs-variable,
+.dark .hljs-template-variable,
+.dark .hljs-property {
+  color: #7fd6e6;
+}
+.dark .hljs-built_in,
+.dark .hljs-meta {
+  color: #e9c46a;
+}

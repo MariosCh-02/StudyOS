@@ -1,0 +1,17 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Permissions for the main StudyOS window",
+  "windows": [
+    "main"
+  ],
+  "permissions": [
+    "core:default",
+    "opener:allow-open-url",
+    "core:window:allow-destroy",
+    "notification:default",
+    "core:window:allow-hide",
+    "core:window:allow-show",
+    "core:event:default"
+  ]
+}
